@@ -28,6 +28,7 @@
     },
     "android": {
       "package": "com.summerroh.bleep",
+      "permissions": [],
       "versionCode": 1
     }
   }
