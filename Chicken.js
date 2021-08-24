@@ -12,7 +12,6 @@ export default class Chicken extends Component {
       super();
       this.state = { 
         pressing: true,
-        pressAction: new Animated.Value(0),
         value: 0,
         count: 0,
       };
@@ -47,26 +46,32 @@ export default class Chicken extends Component {
         shouldPlay: false
       };
 
-      this.sound.loadAsync(require('./assets/bleepshort.mp3'), status, false);
+      this.sound.loadAsync(require('./assets/1.mp3'), status, false);
     }
    
     playSound() {
-      if (this.state.count < 3){
-        console.log("play");
-      this.sound.playAsync();
+      if (this.state.count < 2){
+        console.log("count is smaller than 2");
+      }
+      else if (this.state.count < 5){
+        console.log("count is smaller than 5");
+        this.sound.playAsync();
       }
     };
 
     stopSound() {
       this.sound.stopAsync();
+      // this.sound.unloadAsync();
     }
+
+    
 //playing sounds finish
 
     count=() => {
        interval = setInterval(() => {
         this.setState({ count: this.state.count + 1 })
         console.log(this.state.count);
-      }, 1000);
+      }, 500);
     }
 
     pressin=() => {
@@ -78,18 +83,30 @@ export default class Chicken extends Component {
 
     pressout=() => {
       this.setState({ pressing: !this.state.pressing })
+      this.playSound();
+      this.setOnPlaybackStatusUpdate();
 
       clearInterval(interval);
       this.setState({ count: 0 })
-      this.playSound()
-      this.stopSound()
+      // this.stopSound()
+      
     }
-  
+
+    //this function lets me know that the sound did just finish and I should run stopSound function starts
+    setOnPlaybackStatusUpdate() {
+      this.sound.setOnPlaybackStatusUpdate((playbackStatus) => {
+        // console.log(playbackStatus.didJustFinish)
+        if (playbackStatus.didJustFinish==true) {
+          this.stopSound()
+        }
+    })
+    }
+    //finshes
+
 
 
     
     render() {
-      let date = new Date();
       return (
           <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
