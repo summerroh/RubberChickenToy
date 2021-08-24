@@ -1,15 +1,20 @@
-import React, {Component} from 'react';
-import { StyleSheet, Text, View, StatusBar, Image, ImageBackground, TouchableWithoutFeedback , Alert, Button } from 'react-native';
+import React, {Component, useEffect} from 'react';
+import { StyleSheet, Text, View, StatusBar, Image, ImageBackground, TouchableWithoutFeedback , Alert, Button, Animated } from 'react-native';
 import { Audio } from 'expo-av';
-import button from './assets/button.png';
-import buttonPressed from './assets/button_pressed.png';
+import chicken from './assets/chicken.png';
+import chickenPressed from './assets/chicken_pressed.png';
 
-export default class Bleep extends Component {
+
+
+export default class Chicken extends Component {
 
     constructor() {
       super();
       this.state = { 
-        pressing: true
+        pressing: true,
+        pressAction: new Animated.Value(0),
+        value: 0,
+        count: 0,
       };
     }
 
@@ -18,7 +23,7 @@ export default class Bleep extends Component {
     };
 
     renderImage()  {
-      var imgSource = this.state.pressing? button : buttonPressed;
+      var imgSource = this.state.pressing? chicken : chickenPressed;
       return (
         <Image source={ imgSource } style={styles.image}/> );
     }
@@ -46,8 +51,10 @@ export default class Bleep extends Component {
     }
    
     playSound() {
-      // if(this.state.pressing) {alert("Bleeeeeep!!")};
+      if (this.state.count < 3){
+        console.log("play");
       this.sound.playAsync();
+      }
     };
 
     stopSound() {
@@ -55,27 +62,45 @@ export default class Bleep extends Component {
     }
 //playing sounds finish
 
+    count=() => {
+       interval = setInterval(() => {
+        this.setState({ count: this.state.count + 1 })
+        console.log(this.state.count);
+      }, 1000);
+    }
+
     pressin=() => {
       this.setState({ pressing: !this.state.pressing })
-      this.playSound()
+
+      this.count()
+
     }
 
     pressout=() => {
       this.setState({ pressing: !this.state.pressing })
+
+      clearInterval(interval);
+      this.setState({ count: 0 })
+      this.playSound()
       this.stopSound()
     }
+  
+
 
     
     render() {
+      let date = new Date();
       return (
           <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
             <ImageBackground source={require('./assets/metal_background.jpg')} style={styles.backgroundimage}>
               <View style={styles.contents}>
+
+              {/* <Text>{date.getTime()}</Text> */}
                   {/* <Text style={styles.text}>Hold to Bleep</Text> */}
                   <TouchableWithoutFeedback
                     onPressIn={ () => this.pressin() } 
-                    onPressOut={ () => this.pressout() } >    
+                    onPressOut={ () => this.pressout() } >
                     {this.renderImage()}
                   </TouchableWithoutFeedback>
               </View>
@@ -107,9 +132,9 @@ const styles = StyleSheet.create({
   image:
   {
     // Setting up image width.
-    width: 204,
+    width: 350,
     // Setting up image height.
-    height: 204
+    height: 480
   },
   text: {
     color: "white",

@@ -1,0 +1,25 @@
+vv 치킨이미지가 잘림
+?? 치킨을 픽셀아트로해서 idle 애니메이션도 있고 클릭하면 다른애니메이션나오고 하게?
+
+1에서 15까지의 치킨사운드를 짧은것에서 긴순서로 순으로 재배열하고
+짧게 누름---길게 누르는거 길이차이로 재생하게
+
+xx ->누를때랑 뗄때 둘다 카운트가 올라간다 
+xx 누를때는 올라가고 뗄때는 카운트가 초기화되어야하는데 안되는중
+xx (참고:https://stackoverflow.com/questions/38334667/continuously-increasing-counter-with-long-press-react-native)
+xx 애니메이션 말고 interval 써야할수도
+
+이거>>>>>>> 아니면 setInterval로 0.5초마다
+count가 1씩 올라가게하고
+손을떼면 count 개수만큼 소리재생 이후 count 초기화 
+>>>
+chicken.js 라인54 에서 count가 3이상이면 소리재생하게하려했는데 콘솔로그까지 안찍히고있음!
+---> 치킨을누르면 그 누른상태의 count가 저장되어서 그게 playsound로가기때문에 안되는거임. count가 업데이트되면서 playsound도 계속 다시 실행되어야함
+다른방법생각? ---> count 안에 playsound function을 넣기?
+-----> this.playSound()를 pressout에 넣기?
+
+
+
+치킨 rubberband 애니메이션react native에서 구현
+
+배경 색 변화 애니메이션 구현

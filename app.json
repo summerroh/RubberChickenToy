@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Bleep",
-    "slug": "Bleep",
+    "name": "RubberChickenToy",
+    "slug": "RubberChickenToy",
     "platforms": [
       "ios",
       "android",
@@ -22,12 +22,12 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.summerroh.bleep",
+      "bundleIdentifier": "com.summerroh.RubberChickenToy",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "com.summerroh.bleep",
+      "package": "com.summerroh.RubberChickenToy",
       "permissions": [],
       "versionCode": 1
     }

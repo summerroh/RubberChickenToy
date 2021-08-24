@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Loading from './Loading';
-import Bleep from './Bleep';
-
+import Chicken from './Chicken';
 
 export default class App extends Component{
   state = {
@@ -17,7 +16,7 @@ export default class App extends Component{
     return <Loading />
     }
     else{
-      return <Bleep />
+      return <Chicken />
     }
   }
 }
