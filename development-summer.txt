@@ -15,9 +15,13 @@ vv ---> 치킨을누르면 그 누른상태의 count가 저장되어서 그게 p
 vv 다른방법생각? ---> count 안에 playsound function을 넣기?
 vv -----> this.playSound()를 pressout에 넣기?
 
-stopAsync()대신 unloadAsync()를 써야할것같은데 그럼 loadAsync 를 playsound 함수앙네넣어야하고 그럼 복잡해..어케해?
+vv stopAsync()대신 unloadAsync()를 써야할것같은데 그럼 loadAsync 를 playsound 함수앙네넣어야하고 그럼 복잡해..어케해?
+vv -------> Chicken2.js 60번라인부터
 
-1~15개의 sound를 임포트 하고 playSound 함수안에 넣기
+vv 1~15개의 sound를 임포트 하고 playSound 함수안에 넣기
+
+
+소리는 잘 나옴-!
 
 1에서 15까지의 치킨사운드를 짧은것에서 긴순서로 순으로 재배열하고
 짧게 누름---길게 누르는거 길이차이로 재생하게
@@ -25,3 +29,9 @@ stopAsync()대신 unloadAsync()를 써야할것같은데 그럼 loadAsync 를 pl
 치킨 rubberband 애니메이션react native에서 구현
 
 배경 색 변화 애니메이션 구현
+배경은 react native reanimated background loop(translate animation: use timing function in reanimated)으로, 그림은 치킨그림이랑 뭐 다른거 웃긴거 두개쯤 있어서 선택가능하게
+배경완료해서 배경이랑 본앱이랑 합치는중
+
+
+처음 앱처럼 랜덤으로 소리나오는거랑 누르는길이에따라 다르게나오는거랑 둘다사용할수있도록 토글버튼하나있으면좋을듯?
+랜덤 vs blahblah

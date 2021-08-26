@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import Loading from './Loading';
 import Chicken from './Chicken';
+import Chicken2 from './Chicken2';
+
+import AnimatedBackground from './AnimatedBackground';
 
 export default class App extends Component{
   state = {
@@ -16,7 +19,7 @@ export default class App extends Component{
     return <Loading />
     }
     else{
-      return <Chicken />
+      return <Chicken2 />
     }
   }
 }
