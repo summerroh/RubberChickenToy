@@ -29,8 +29,11 @@ vv 1~15개의 sound를 임포트 하고 playSound 함수안에 넣기
 치킨 rubberband 애니메이션react native에서 구현
 
 배경 색 변화 애니메이션 구현
-배경은 react native reanimated background loop(translate animation: use timing function in reanimated)으로, 그림은 치킨그림이랑 뭐 다른거 웃긴거 두개쯤 있어서 선택가능하게
-배경완료해서 배경이랑 본앱이랑 합치는중
+vv 배경은 react native reanimated background loop(translate animation: use timing function in reanimated)으로, 그림은 치킨그림이랑 뭐 다른거 웃긴거 두개쯤 있어서 선택가능하게
+vv 배경완료해서 배경이랑 본앱이랑 합치는중
+
+픽셀아트 gif로
+---> resizemode repeat이 안되는거같음 한개만나오는거같음
 
 
 처음 앱처럼 랜덤으로 소리나오는거랑 누르는길이에따라 다르게나오는거랑 둘다사용할수있도록 토글버튼하나있으면좋을듯?

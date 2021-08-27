@@ -19,7 +19,7 @@ export default class App extends Component{
     return <Loading />
     }
     else{
-      return <Chicken2 />
+      return <AnimatedBackground />
     }
   }
 }

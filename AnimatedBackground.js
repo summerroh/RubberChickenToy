@@ -107,7 +107,7 @@ function AnimatedBackground() {
       <Animated.View style={[styles.image, { transform: [{ translateX }, { translateY }]}]}>
         <Image
           style={styles.image}
-          source={require('./assets/chick.png')}
+          source={require('./assets/chick.gif')}
           resizeMode="repeat"
         />
       </Animated.View>
