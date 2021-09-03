@@ -107,8 +107,9 @@ function AnimatedBackground() {
       <Animated.View style={[styles.image, { transform: [{ translateX }, { translateY }]}]}>
         <Image
           style={styles.image}
-          source={require('./assets/chick.gif')}
+          source={require('./assets/chick.png')}
           resizeMode="repeat"
+          // imageStyle={{ resizeMode: 'repeat' }}
         />
       </Animated.View>
     </TouchableWithoutFeedback>

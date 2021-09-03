@@ -1,11 +1,10 @@
-import React, {Component, useEffect} from 'react';
-import { StyleSheet, Text, View, StatusBar, Image, ImageBackground, TouchableWithoutFeedback , Alert, Button, Animated } from 'react-native';
+import React, { useMemo, useEffect, useState } from 'react';
+import { StyleSheet, View, StatusBar, Image, ImageBackground, TouchableWithoutFeedback , Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import chicken from './assets/chicken.png';
 import chickenPressed from './assets/chicken_pressed.png';
-
-
-
+import Animated, { EasingNode, stopClock, useAnimatedStyle, useSharedValue, withRepeat, withSpring } from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 
 const chickenSounds = {
 	one: require('./assets/1.mp3'),
@@ -18,30 +17,107 @@ const chickenSounds = {
 }
 
 
+//background stuff starts//
 
-export default class Chicken extends Component {
+const imageSize = {
+  width: 192,
+  height: 192,
+};
 
-    constructor() {
-      super();
-      this.state = { 
-        pressing: true,
-        count: 0,
-      };
-    }
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+const animatedWidth = screenWidth + imageSize.width;
+const animatedHeight = screenHeight + imageSize.height;
 
-    static navigationOptions = {
-      header: null,
-    };
+const {
+  useCode,
+  block,
+  set,
+  Value,
+  Clock,
+  eq,
+  clockRunning,
+  not,
+  cond,
+  startClock,
+  timing,
+  interpolateNode ,
+  and,
+} = Animated;
 
-    renderImage()  {
-      var imgSource = this.state.pressing? chicken : chickenPressed;
+const runTiming = (clock) => {
+  const state = {
+    finished: new Value(0),
+    position: new Value(0),
+    time: new Value(0),
+    frameTime: new Value(0),
+  };
+
+  const config = {
+    duration: 5000,
+    toValue: 1,
+    easing: EasingNode.inOut(EasingNode.linear),
+  };
+
+  return block([
+    // we run the step here that is going to update position
+    cond(
+      not(clockRunning(clock)),
+      set(state.time, 0),
+      timing(clock, state, config),
+    ),
+    cond(eq(state.finished, 1), [
+      set(state.finished, 0),
+      set(state.position, 0),
+      set(state.frameTime, 0),
+      set(state.time, 0),
+    ]),
+    state.position,
+  ]);
+}
+
+//background stuff finishes//
+
+
+
+function Chicken(props) {
+
+    const [pressing,setPressing] = useState(true);
+    const [count,setCount] = useState(1);
+    const [animation,setAnimation] = useState('bounce');
+
+
+    const renderImage = () => {
+      var imgSource = pressing? chicken : chickenPressed;
       return (
-        <Image source={ imgSource } style={styles.image}/> );
+        <Image source={ imgSource } style={styles.chickenimage}/> );
     }
+
+// // chicken animation stuff starts //
+
+//     // const chickenProgress = useSharedValue(1);
+//     const scale = useSharedValue(2);
+
+//     const reanimatedStyle = useAnimatedStyle(() => {
+//       return {
+//         // opacity: chickenProgress.value,
+//         transform: { scale: scale.value }
+//       };
+//     }, []);
+
+//     useEffect(() => {
+//       // chickenProgress.value = withRepeat(withSpring(0.5),3);
+//       scale.value = withRepeat(withSpring(1), 3);
+//     }, []);
+
+// // chicken animation stuff finishes //
+
 
 //playing sound starts
 //tutorial: https://www.youtube.com/watch?v=HCvp2fZh--A
-    async componentDidMount() {
+
+
+    useEffect(()=>{
       Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -51,15 +127,19 @@ export default class Chicken extends Component {
         staysActiveInBackground: false,
         playThroughEarpieceAndroid: false
       });
-    }
+      setPlay(!play);
+    },[])
 
+    useEffect(()=>{
+      console.log(count);
+    },[count])
 
 
 
 //playing different sound files
 //https://heartbeat.fritz.ai/how-to-build-a-xylophone-app-with-audio-api-react-native-and-expo-7d6754a0603c
 
-    handlePlaySound = async note => {
+const handlePlaySound = async note => {
       const soundObject = new Audio.Sound()
 
       try {
@@ -73,90 +153,152 @@ export default class Chicken extends Component {
             }, playbackStatus.playableDurationMillis)
           })
           .catch(error => {
-            console.log(error)
+            // console.log(error)
           })
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
     }
 //playing different sounds finish
 
-
-
-
    
-    playSound() {
-      if (this.state.count < 2){
+    const playSound = () => {
+      if (count <= 1){
+        console.log("count is smaller than 1");
+        handlePlaySound('one')
+      }
+
+      else if (count <= 2){
         console.log("count is smaller than 2");
-        this.handlePlaySound('one')
+        handlePlaySound('two')
       }
 
-      else if (this.state.count < 4){
-        console.log("count is smaller than 4");
-        this.handlePlaySound('three')
+      else if (count <= 3){
+        console.log("count is smaller than 3");
+        handlePlaySound('three')
       }
 
-      else if (this.state.count < 5){
+      else if (count <= 4){
         console.log("count is smaller than 5");
-        this.handlePlaySound('five')
+        handlePlaySound('four')
       }
 
-      else if (this.state.count > 5){
+      else if (count <= 5){
         console.log("count is smaller than 5");
-        this.handlePlaySound('seven')
+        handlePlaySound('five')
+      }
+
+      else if (count > 5){
+        console.log("count is bigger than 5");
+        handlePlaySound('seven')
       }
     };
 
 
-
-    count=() => {
+    const counting=() => {
        interval = setInterval(() => {
-        this.setState({ count: this.state.count + 1 })
-        console.log(this.state.count);
-      }, 500);
+        setCount(count => count + 1)
+        // console.log(count);
+      }, 400);
     }
 
-    pressin=() => {
-      this.setState({ pressing: !this.state.pressing })
+    const pressin=() => {
+      setPressing({ pressing: !pressing })
 
-      this.count()
-    }
-
-    pressout=() => {
-      this.setState({ pressing: !this.state.pressing })
-      this.playSound();
-      // this.setOnPlaybackStatusUpdate();
-
-      clearInterval(interval);
-      this.setState({ count: 0 })
-      // this.stopSound()
+      counting()
       
     }
+
+    const pressout=() => {
+      setPressing({ pressing: !pressing })
+      playSound();
+      // setOnPlaybackStatusUpdate();
+      
+
+      clearInterval(interval);
+      setCount(count === 1)
+      // stopSound()
+    }
+
+
+    // background animation stuff starts //
+
+    const [play, setPlay] = useState(false);
+  const {progress, clock, isPlaying} = useMemo(
+    () => ({
+      progress: new Value(0),
+      isPlaying: new Value(0),
+      clock: new Clock(),
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    isPlaying.setValue(play ? 1 : 0);
+  }, [play, isPlaying]);
+
+  useCode(
+    () =>
+      block([
+        cond(and(not(clockRunning(clock)), eq(isPlaying, 1)), startClock(clock)),
+        cond(and(clockRunning(clock), eq(isPlaying, 0)), stopClock(clock)),
+        set(progress, runTiming(clock)),
+      ]),
+    [progress, clock],
+  );
+
+  const translateX = interpolateNode (progress, {
+    inputRange: [0, 1],
+    outputRange: [0, -imageSize.width],
+  });
+
+  const translateY = interpolateNode (progress, {
+    inputRange: [0, 1],
+    outputRange: [0, -imageSize.width],
+  });
+
+  // background animation stuff finishes //
+
+
+
+
+
+
 
 
 
 
     
-    render() {
       return (
           <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
-            <ImageBackground source={require('./assets/metal_background.jpg')} style={styles.backgroundimage}>
-              <View style={styles.contents}>
+
+            <Animated.View style={[{ transform: [{ translateX }, { translateY }]}]}>
+              <Image
+                style={styles.image}
+                source={require('./assets/chick.png')}
+                resizeMode="repeat"
+              />
+            </Animated.View>
+
+            {/* <ImageBackground source={require('./assets/metal_background.jpg')} style={styles.backgroundimage}> */}
+              <Animatable.View animation={animation} iterationCount={'infinite'} iterationDelay={1000} style={styles.contents}>
 
               {/* <Text>{date.getTime()}</Text> */}
                   {/* <Text style={styles.text}>Hold to Bleep</Text> */}
                   <TouchableWithoutFeedback
-                    onPressIn={ () => this.pressin()  }
-                    onPressOut={ () => this.pressout() } >
-                    {this.renderImage()}
+                    onPressIn={ () => pressin()  }
+                    onPressOut={ () => pressout() } >
+                    {renderImage()}
                   </TouchableWithoutFeedback>
-              </View>
-            </ImageBackground>  
+
+              </Animatable.View>
+            {/* </ImageBackground>   */}
           </View>
       );
-      }
-      }
+      
+      };
+      export default Chicken;
 
 const styles = StyleSheet.create({
   container: {
@@ -172,21 +314,31 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   contents:{
-    flex:1,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column"
-  },
-  image:
-  {
-    // Setting up image width.
+    // flex:1,
+    // justifyContent: "center",
+    // alignItems: "center",
+    // flexDirection: "column",
     width: 350,
-    // Setting up image height.
-    height: 480
+    height: 480,
+    position: 'absolute',
+
+  },
+  chickenimage:
+  {
+    width: 350,
+    height: 480,
+    position: 'relative',
+
+    backgroundColor: 'blue'
   },
   text: {
     color: "white",
     fontSize: 30,
     marginBottom: 10
-}
+  },
+  image: {
+    width: animatedWidth,
+    height: animatedHeight,
+    backgroundColor: '#f9e52b'
+  },
 });
