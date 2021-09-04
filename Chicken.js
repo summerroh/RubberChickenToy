@@ -260,19 +260,10 @@ const handlePlaySound = async note => {
   // background animation stuff finishes //
 
 
-
-
-
-
-
-
-
-
     
       return (
-          <View style={styles.container}>
+          <View>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
-
             <Animated.View style={[{ transform: [{ translateX }, { translateY }]}]}>
               <Image
                 style={styles.image}
@@ -280,12 +271,10 @@ const handlePlaySound = async note => {
                 resizeMode="repeat"
               />
             </Animated.View>
+            
+            <View style={styles.container}>
+              <Animatable.View animation={animation} iterationCount={'infinite'} iterationDelay={1000}>
 
-            {/* <ImageBackground source={require('./assets/metal_background.jpg')} style={styles.backgroundimage}> */}
-              <Animatable.View animation={animation} iterationCount={'infinite'} iterationDelay={1000} style={styles.contents}>
-
-              {/* <Text>{date.getTime()}</Text> */}
-                  {/* <Text style={styles.text}>Hold to Bleep</Text> */}
                   <TouchableWithoutFeedback
                     onPressIn={ () => pressin()  }
                     onPressOut={ () => pressout() } >
@@ -293,7 +282,7 @@ const handlePlaySound = async note => {
                   </TouchableWithoutFeedback>
 
               </Animatable.View>
-            {/* </ImageBackground>   */}
+            </View>
           </View>
       );
       
@@ -302,40 +291,21 @@ const handlePlaySound = async note => {
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      flexDirection: "column"
-    //   paddingHorizontal: 30,
-    //   paddingVertical: 100,
-    //   backgroundColor: "pink"
-  },
-  backgroundimage: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center"
-  },
-  contents:{
-    // flex:1,
-    // justifyContent: "center",
-    // alignItems: "center",
-    // flexDirection: "column",
-    width: 350,
-    height: 480,
     position: 'absolute',
-
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: '20%', 
+    justifyContent: 'center', 
+    alignItems: 'center',
   },
+
   chickenimage:
   {
     width: 350,
     height: 480,
-    position: 'relative',
+  },
 
-    backgroundColor: 'blue'
-  },
-  text: {
-    color: "white",
-    fontSize: 30,
-    marginBottom: 10
-  },
   image: {
     width: animatedWidth,
     height: animatedHeight,

@@ -50,7 +50,7 @@ vv animated.view 가TouchableWithoutFeedback를 작게 만들고 오른쪽 아�
 vv ->  there is a problem with the touchable area
 
 닭그림하고 touchablearea가 겹쳐야만 소리가 나는데 top:50%, left:50%, top:-50%, left:-50% 을 제거하니까 두개가 완벽하게 겹치긴함, 위치만 수동으로 좀 수정해서 중간으로 옮기면될듯
-
+justifyContent 사용해서 치킨을 중ㅇ앙으로 정ㅇ렬해보기?
 
 내 앱을 가지고 싶다는 꿈을 가지고 있는데, 개발 비용은 너무 비싸고... 스스로 배워서 만드려니 시간도 없고 공부도 너무 힘들고.. 고민중이셨던 분들!
 저도 같은 고민을 오랫동안 해 왔기에 의뢰인님의 고민과 걱정 정말 100%이해합니다.
