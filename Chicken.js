@@ -1,11 +1,10 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, StatusBar, Image, TouchableWithoutFeedback , Dimensions } from 'react-native';
+import { StyleSheet, View, StatusBar, TouchableWithoutFeedback , Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import chicken from './assets/chicken.png';
 import clickme from './assets/clickme.png';
 import quack from './assets/quack.png';
-// import chickenPressed from './assets/chicken_pressed.png';
-import Animated, { EasingNode, stopClock, interpolateColor, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
+import Animated, { EasingNode, stopClock, interpolateColor, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming, withRepeat  } from 'react-native-reanimated';
 import * as Animatable from 'react-native-animatable';
 // react-native--animatable explanation
 // https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
@@ -30,8 +29,7 @@ const chickenSounds = {
 const ChickenSoundKeys = Object.keys(chickenSounds)
 
 
-
-//background animation tuff starts//
+//background animation stuff starts//
 const imageSize = {
   width: 192,
   height: 192,
@@ -91,14 +89,11 @@ const runTiming = (clock) => {
 
 //background animation stuff finishes//
 
-function Chicken(props) {
+function Chicken() {
     const [pressing,setPressing] = useState(true);
-    const [count,setCount] = useState(1);
-    //animation prop for backgroundcolor interpolation
-    const [animation, setAnimation] = useState(new Animated.Value(0))
+    // const [count,setCount] = useState(1);
 
     const renderImage = () => {
-      // var imgSource = pressing? chicken : chickenPressed;
       var imgSource = chicken;
       return (
         <Animatable.Image ref={AnimationRef} source={ imgSource } style={styles.chickenimage}/> );
@@ -123,6 +118,7 @@ function Chicken(props) {
         playThroughEarpieceAndroid: false
       });
       setPlay(!play);
+      startAnimation();
     },[])
 
     // useEffect(()=>{
@@ -201,7 +197,6 @@ const handlePlaySound = async note => {
 
     const playSound = () => {
       const note = ChickenSoundKeys[Math.floor(Math.random() * ChickenSoundKeys.length)]
-      // console.log(note);
       handlePlaySound(note)
     }
 
@@ -222,7 +217,7 @@ const handlePlaySound = async note => {
       // setCount(count === 1)
     }
 
-  //chicken animation with Animatable starts //
+  // chicken rubberband & text animation with Animatable starts //
     const AnimationRef = useRef(null);
     const TextAnimationRef = useRef(null);
       
@@ -234,10 +229,10 @@ const handlePlaySound = async note => {
         TextAnimationRef.current?.wobble(1200);
       }
     }
-  //chicken animation with Animatable finishes //
+  // chicken rubberband & text animation with Animatable finishes //
     
 
-  // background animation stuff starts //
+  // background parallel animation stuff starts //
   const [play, setPlay] = useState(false);
   const {progress, clock, isPlaying} = useMemo(
     () => ({
@@ -271,52 +266,62 @@ const handlePlaySound = async note => {
     inputRange: [0, 1],
     outputRange: [0, -imageSize.width],
   });
+  // background parallel animation stuff finishes //
 
 
+  // background color interpolation starts //
+  // https://www.youtube.com/watch?v=bLfT6KJyFzI
+  // https://github.com/osama256/Animation-color-interpolate/blob/master/App.js
+  
+  const animation = useSharedValue(0)
 
-  // background animation stuff finishes //
+  const animationColor = useDerivedValue(() => {
+    return interpolateColor(animation.value,
+      [0, 1],
+      ['#f9e52b', '#FFD741']
+    )
+  })
+  const startAnimation = () => {
+    animation.value = withRepeat(withTiming(1,{
+      duration:2000
+    }),-1,true,
+    )
+  }
+  const animationStyle = useAnimatedStyle(() => {
+    return{
+      backgroundColor : animationColor.value
+    }
+  })
+ // background color interpolation finishes //
 
 
-
-
-
-
-
-
-
-    
       return (
           <View>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
             <Animated.View style={[{ transform: [{ translateX }, { translateY }]}]}>
               <Animated.Image
-                // style={[styles.image, {backgroundColor: backgroundColor} ]}
-                style={styles.image}
+                style={[styles.image, animationStyle ]}
                 source={require('./assets/chick.png')}
                 resizeMode="repeat"
               />
-              </Animated.View>
+            </Animated.View>
             
-
             <View style={styles.container}>
               <TouchableWithoutFeedback onPress={_onPress}>
                 {renderTextImage()}
               </TouchableWithoutFeedback>
 
               <Animatable.View animation={'bounce'} iterationCount={'infinite'} iterationDelay={1000}>
-
                   <TouchableWithoutFeedback
                     onPress={_onPress}
                     onPressIn={ () => pressin()  }
                     onPressOut={ () => pressout() } >
                     {renderImage()}
                   </TouchableWithoutFeedback>
-
               </Animatable.View>
             </View>
           </View>
       );
-      
       };
       export default Chicken;
 

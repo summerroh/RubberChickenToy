@@ -29,7 +29,7 @@
     "android": {
       "package": "com.summerroh.RubberChickenToy",
       "permissions": [],
-      "versionCode": 1
+      "versionCode": 3
     }
   }
 }
