@@ -1,24 +1,17 @@
-import React, {Component} from 'react';
+import React, { useState } from 'react';
 import Loading from './Loading';
 import Chicken from './Chicken';
 
-import AnimatedBackground from './AnimatedBackground';
+function App() {
+  const [isLoading, setIsLoading] = useState(false)
 
-export default class App extends Component{
-  state = {
-    isLoading: false
-  };
-  
-  // this.setState({ isLoading: false}
-  
+  if ( isLoading ) {
+  return <Loading />
+  }
 
-  render() {
-    const { isLoading } = this.state;
-    if ( isLoading==true ) {
-    return <Loading />
-    }
-    else{
-      return <Chicken />
-    }
+  else{
+    return <Chicken />
   }
 }
+
+export default App;

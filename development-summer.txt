@@ -1,4 +1,3 @@
-vv 치킨이미지가 잘림
 ?? 치킨을 픽셀아트로해서 idle 애니메이션도 있고 클릭하면 다른애니메이션나오고 하게?
 
 xx ->누를때랑 뗄때 둘다 카운트가 올라간다 
@@ -15,13 +14,6 @@ vv ---> 치킨을누르면 그 누른상태의 count가 저장되어서 그게 p
 vv 다른방법생각? ---> count 안에 playsound function을 넣기?
 vv -----> this.playSound()를 pressout에 넣기?
 
-vv stopAsync()대신 unloadAsync()를 써야할것같은데 그럼 loadAsync 를 playsound 함수앙네넣어야하고 그럼 복잡해..어케해?
-vv -------> Chicken2.js 60번라인부터
-
-vv 1~15개의 sound를 임포트 하고 playSound 함수안에 넣기
-
-
-소리는 잘 나옴-!
 
 1에서 15까지의 치킨사운드를 짧은것에서 긴순서로 순으로 재배열하고
 짧게 누름---길게 누르는거 길이차이로 재생하게
@@ -49,8 +41,18 @@ vv view 에서 animatedview로 바꾸니까 갑자기 크기가 작아짐...하�
 vv animated.view 가TouchableWithoutFeedback를 작게 만들고 오른쪽 아래로 옮김
 vv ->  there is a problem with the touchable area
 
-닭그림하고 touchablearea가 겹쳐야만 소리가 나는데 top:50%, left:50%, top:-50%, left:-50% 을 제거하니까 두개가 완벽하게 겹치긴함, 위치만 수동으로 좀 수정해서 중간으로 옮기면될듯
-justifyContent 사용해서 치킨을 중ㅇ앙으로 정ㅇ렬해보기?
+vv 닭그림하고 touchablearea가 겹쳐야만 소리가 나는데 top:50%, left:50%, top:-50%, left:-50% 을 제거하니까 두개가 완벽하게 겹치긴함, 위치만 수동으로 좀 수정해서 중간으로 옮기면될듯
+vv justifyContent 사용해서 치킨을 중ㅇ앙으로 정ㅇ렬해보기?
+
+일단 누르면 랜덤하게 소리나는걸로 앱스토어에 업데이트하고, 누르는 길이에 따라 다른 길이의 소리가 나는 건 다음 업데이트때 하기
+vv 랜덤하게 소리나기 로직
+vv 기본으로는 bounce를 반복하고, onPressOut에서 rubberband 애니메이션 재생
+ 원래 chickenapp처럼 sound 중첩이 안되게 하고싶은데 모르겠음 
+vv splash screen backgroundColor를 스플래시이미지에맞는 오렌지로 변경 (#ff9137)
+vv 픽셀아트 스탕일로 Click Me! 이미지로 만들어서 치킨 머리위에 디스플레이
+ 치킨 클릭할때마다 QUACK!!!으로 바뀌면서 색상도 하얀색으로 바뀌고 shake 애니메이션도?
+ 배경이미지 컬러 interpolate했는데 오류뜨는데 outputRange 숫자형식이잘못된거같음
+
 
 내 앱을 가지고 싶다는 꿈을 가지고 있는데, 개발 비용은 너무 비싸고... 스스로 배워서 만드려니 시간도 없고 공부도 너무 힘들고.. 고민중이셨던 분들!
 저도 같은 고민을 오랫동안 해 왔기에 의뢰인님의 고민과 걱정 정말 100%이해합니다.

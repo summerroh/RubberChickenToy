@@ -1,10 +1,14 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { StyleSheet, View, StatusBar, Image, ImageBackground, TouchableWithoutFeedback , Dimensions } from 'react-native';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
+import { StyleSheet, View, StatusBar, Image, TouchableWithoutFeedback , Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import chicken from './assets/chicken.png';
-import chickenPressed from './assets/chicken_pressed.png';
-import Animated, { EasingNode, stopClock, useAnimatedStyle, useSharedValue, withRepeat, withSpring } from 'react-native-reanimated';
+import clickme from './assets/clickme.png';
+import quack from './assets/quack.png';
+// import chickenPressed from './assets/chicken_pressed.png';
+import Animated, { EasingNode, stopClock, interpolateColor, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import * as Animatable from 'react-native-animatable';
+// react-native--animatable explanation
+// https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
 
 const chickenSounds = {
 	one: require('./assets/1.mp3'),
@@ -12,13 +16,22 @@ const chickenSounds = {
 	three: require('./assets/3.mp3'),
 	four: require('./assets/4.mp3'),
 	five: require('./assets/5.mp3'),
-	six: require('./assets/7.mp3'),
-	seven: require('./assets/8.mp3')
-}
+	six: require('./assets/6.mp3'),
+	seven: require('./assets/7.mp3'),
+	eight: require('./assets/8.mp3'),
+	nine: require('./assets/9.mp3'),
+	ten: require('./assets/10.mp3'),
+	eleven: require('./assets/11.mp3'),
+	twelve: require('./assets/12.mp3'),
+	thirteen: require('./assets/13.mp3'),
+	fourteen: require('./assets/14.mp3'),
+};
+
+const ChickenSoundKeys = Object.keys(chickenSounds)
 
 
-//background stuff starts//
 
+//background animation tuff starts//
 const imageSize = {
   width: 192,
   height: 192,
@@ -76,47 +89,29 @@ const runTiming = (clock) => {
   ]);
 }
 
-//background stuff finishes//
-
-
+//background animation stuff finishes//
 
 function Chicken(props) {
-
     const [pressing,setPressing] = useState(true);
     const [count,setCount] = useState(1);
-    const [animation,setAnimation] = useState('bounce');
-
+    //animation prop for backgroundcolor interpolation
+    const [animation, setAnimation] = useState(new Animated.Value(0))
 
     const renderImage = () => {
-      var imgSource = pressing? chicken : chickenPressed;
+      // var imgSource = pressing? chicken : chickenPressed;
+      var imgSource = chicken;
       return (
-        <Image source={ imgSource } style={styles.chickenimage}/> );
+        <Animatable.Image ref={AnimationRef} source={ imgSource } style={styles.chickenimage}/> );
     }
-
-// // chicken animation stuff starts //
-
-//     // const chickenProgress = useSharedValue(1);
-//     const scale = useSharedValue(2);
-
-//     const reanimatedStyle = useAnimatedStyle(() => {
-//       return {
-//         // opacity: chickenProgress.value,
-//         transform: { scale: scale.value }
-//       };
-//     }, []);
-
-//     useEffect(() => {
-//       // chickenProgress.value = withRepeat(withSpring(0.5),3);
-//       scale.value = withRepeat(withSpring(1), 3);
-//     }, []);
-
-// // chicken animation stuff finishes //
+    const renderTextImage = () => {
+      var textImgSource = pressing? clickme : quack;
+      return (
+        <Animatable.Image ref={TextAnimationRef} source={ textImgSource } style={styles.clickme} /> );
+    }
 
 
 //playing sound starts
 //tutorial: https://www.youtube.com/watch?v=HCvp2fZh--A
-
-
     useEffect(()=>{
       Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
@@ -130,16 +125,18 @@ function Chicken(props) {
       setPlay(!play);
     },[])
 
-    useEffect(()=>{
-      console.log(count);
-    },[count])
-
+    // useEffect(()=>{
+    //   console.log(count);
+    // },[count])
 
 
 //playing different sound files
 //https://heartbeat.fritz.ai/how-to-build-a-xylophone-app-with-audio-api-react-native-and-expo-7d6754a0603c
 
 const handlePlaySound = async note => {
+      if (soundObject) {
+        soundObject.unloadAsync()
+      }
       const soundObject = new Audio.Sound()
 
       try {
@@ -161,69 +158,87 @@ const handlePlaySound = async note => {
     }
 //playing different sounds finish
 
-   
+//playing different sound according to the length of press starts
+    // const playSound = () => {
+    //   if (count <= 1){
+    //     console.log("count is smaller than 1");
+    //     handlePlaySound('one')
+    //   }
+
+    //   else if (count <= 2){
+    //     console.log("count is smaller than 2");
+    //     handlePlaySound('two')
+    //   }
+
+    //   else if (count <= 3){
+    //     console.log("count is smaller than 3");
+    //     handlePlaySound('three')
+    //   }
+
+    //   else if (count <= 4){
+    //     console.log("count is smaller than 5");
+    //     handlePlaySound('four')
+    //   }
+
+    //   else if (count <= 5){
+    //     console.log("count is smaller than 5");
+    //     handlePlaySound('five')
+    //   }
+
+    //   else if (count > 5){
+    //     console.log("count is bigger than 5");
+    //     handlePlaySound('seven')
+    //   }
+    // };
+
+    // const counting=() => {
+    //    interval = setInterval(() => {
+    //     setCount(count => count + 1)
+    //     // console.log(count);
+    //   }, 400);
+    // }
+//playing different sound according to the length of press finishes
+
     const playSound = () => {
-      if (count <= 1){
-        console.log("count is smaller than 1");
-        handlePlaySound('one')
-      }
-
-      else if (count <= 2){
-        console.log("count is smaller than 2");
-        handlePlaySound('two')
-      }
-
-      else if (count <= 3){
-        console.log("count is smaller than 3");
-        handlePlaySound('three')
-      }
-
-      else if (count <= 4){
-        console.log("count is smaller than 5");
-        handlePlaySound('four')
-      }
-
-      else if (count <= 5){
-        console.log("count is smaller than 5");
-        handlePlaySound('five')
-      }
-
-      else if (count > 5){
-        console.log("count is bigger than 5");
-        handlePlaySound('seven')
-      }
-    };
-
-
-    const counting=() => {
-       interval = setInterval(() => {
-        setCount(count => count + 1)
-        // console.log(count);
-      }, 400);
+      const note = ChickenSoundKeys[Math.floor(Math.random() * ChickenSoundKeys.length)]
+      // console.log(note);
+      handlePlaySound(note)
     }
 
     const pressin=() => {
-      setPressing({ pressing: !pressing })
+      // setPressing( !pressing )
+      //  console.log('pressin: ' + pressing)
 
-      counting()
-      
+      // counting()
     }
 
     const pressout=() => {
-      setPressing({ pressing: !pressing })
-      playSound();
-      // setOnPlaybackStatusUpdate();
-      
+      // setPressing( !pressing )
+      // console.log('pressout: ' + pressing)
 
-      clearInterval(interval);
-      setCount(count === 1)
-      // stopSound()
+      playSound();
+
+      // clearInterval(interval);
+      // setCount(count === 1)
     }
 
+  //chicken animation with Animatable starts //
+    const AnimationRef = useRef(null);
+    const TextAnimationRef = useRef(null);
+      
+    const _onPress = () => {
+      if(AnimationRef) {
+        AnimationRef.current?.rubberBand(1000);
+      }
+      if(TextAnimationRef) {
+        TextAnimationRef.current?.wobble(1200);
+      }
+    }
+  //chicken animation with Animatable finishes //
+    
 
-    // background animation stuff starts //
-
-    const [play, setPlay] = useState(false);
+  // background animation stuff starts //
+  const [play, setPlay] = useState(false);
   const {progress, clock, isPlaying} = useMemo(
     () => ({
       progress: new Value(0),
@@ -257,7 +272,16 @@ const handlePlaySound = async note => {
     outputRange: [0, -imageSize.width],
   });
 
+
+
   // background animation stuff finishes //
+
+
+
+
+
+
+
 
 
     
@@ -265,17 +289,24 @@ const handlePlaySound = async note => {
           <View>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
             <Animated.View style={[{ transform: [{ translateX }, { translateY }]}]}>
-              <Image
+              <Animated.Image
+                // style={[styles.image, {backgroundColor: backgroundColor} ]}
                 style={styles.image}
                 source={require('./assets/chick.png')}
                 resizeMode="repeat"
               />
-            </Animated.View>
+              </Animated.View>
             
+
             <View style={styles.container}>
-              <Animatable.View animation={animation} iterationCount={'infinite'} iterationDelay={1000}>
+              <TouchableWithoutFeedback onPress={_onPress}>
+                {renderTextImage()}
+              </TouchableWithoutFeedback>
+
+              <Animatable.View animation={'bounce'} iterationCount={'infinite'} iterationDelay={1000}>
 
                   <TouchableWithoutFeedback
+                    onPress={_onPress}
                     onPressIn={ () => pressin()  }
                     onPressOut={ () => pressout() } >
                     {renderImage()}
@@ -310,5 +341,10 @@ const styles = StyleSheet.create({
     width: animatedWidth,
     height: animatedHeight,
     backgroundColor: '#f9e52b'
+  },
+  clickme: {
+    width: 220,
+    height: 33,
+    marginBottom: 20,
   },
 });
