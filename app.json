@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "RubberChickenToy",
-    "slug": "RubberChickenToy",
+    "name": "ChickenToy",
+    "slug": "ChickenToy",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "3.0.0",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -22,14 +22,15 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.summerroh.RubberChickenToy",
+      "bundleIdentifier": "com.summerroh.chickentoy",
       "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "com.summerroh.RubberChickenToy",
+      "package": "com.summerroh.chickentoy",
       "permissions": [],
-      "versionCode": 3
-    }
+      "versionCode": 7
+    },
+    "description": ""
   }
 }

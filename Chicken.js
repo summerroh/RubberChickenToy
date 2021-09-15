@@ -1,11 +1,10 @@
 import React, { useMemo, useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, StatusBar, TouchableWithoutFeedback , Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
-import chicken from './assets/chicken.png';
-import clickme from './assets/clickme.png';
-import quack from './assets/quack.png';
 import Animated, { EasingNode, stopClock, interpolateColor, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming, withRepeat  } from 'react-native-reanimated';
 import * as Animatable from 'react-native-animatable';
+import AppLoading from 'expo-app-loading';
+import { Asset } from 'expo-asset';
 // react-native--animatable explanation
 // https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
 
@@ -35,8 +34,8 @@ const imageSize = {
   height: 192,
 };
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get('screen').width;
+const screenHeight = Dimensions.get('screen').height;
 const animatedWidth = screenWidth + imageSize.width;
 const animatedHeight = screenHeight + imageSize.height;
 
@@ -91,17 +90,52 @@ const runTiming = (clock) => {
 
 function Chicken() {
     const [pressing,setPressing] = useState(true);
+    const [loaded, setLoaded] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [quackLocation, setQuackLocation] = useState([styles.quackLocation1, styles.quackLocation2]);
+    const [quackIndex, setQuackIndex] = useState(0);
     // const [count,setCount] = useState(1);
 
+// preloading the assets, if the assets are not loaded, show splash screen starts //
+    const preLoad = async () => {
+      try{
+        // await Font.loadAsync({
+        //   ...Ionicons.font
+        // });
+        await Asset.loadAsync([
+          require('./assets/chicken.png'),
+          require('./assets/chick.png'),
+          require('./assets/clickme.png'),
+          require('./assets/quack.png'),
+        ]);
+        setLoaded(true);
+      }catch(e){
+        console.log(e);
+      }
+    };
+  
+    useEffect(() => {
+      preLoad();
+    }, []);
+// preloading the assets, if the assets are not loaded, show splash screen starts //
+
     const renderImage = () => {
-      var imgSource = chicken;
+      var imgSource = require('./assets/chicken.png');
       return (
         <Animatable.Image ref={AnimationRef} source={ imgSource } style={styles.chickenimage}/> );
     }
     const renderTextImage = () => {
-      var textImgSource = pressing? clickme : quack;
+      var textImgSource = require('./assets/clickme.png');
       return (
         <Animatable.Image ref={TextAnimationRef} source={ textImgSource } style={styles.clickme} /> );
+    }
+    const renderQuack = () => {
+      var quackImgSource = require('./assets/quack.png');
+      
+      return visible ? (
+        <Animatable.Image ref={QuackAnimationRef} source={ quackImgSource } style={[styles.quack, quackLocation[quackIndex]]} /> )
+        :
+        (<Animatable.Image ref={QuackAnimationRef} style={styles.quack} />)
     }
 
 
@@ -117,8 +151,8 @@ function Chicken() {
         staysActiveInBackground: false,
         playThroughEarpieceAndroid: false
       });
-      setPlay(!play);
       startAnimation();
+      
     },[])
 
     // useEffect(()=>{
@@ -200,16 +234,14 @@ const handlePlaySound = async note => {
       handlePlaySound(note)
     }
 
-    const pressin=() => {
-      // setPressing( !pressing )
-      //  console.log('pressin: ' + pressing)
+    // const pressin=() => {
+    //   // setPressing( !pressing )
 
-      // counting()
-    }
+    //   // counting()
+    // }
 
     const pressout=() => {
       // setPressing( !pressing )
-      // console.log('pressout: ' + pressing)
 
       playSound();
 
@@ -220,6 +252,7 @@ const handlePlaySound = async note => {
   // chicken rubberband & text animation with Animatable starts //
     const AnimationRef = useRef(null);
     const TextAnimationRef = useRef(null);
+    const QuackAnimationRef = useRef(null);
       
     const _onPress = () => {
       if(AnimationRef) {
@@ -228,30 +261,30 @@ const handlePlaySound = async note => {
       if(TextAnimationRef) {
         TextAnimationRef.current?.wobble(1200);
       }
+      if(QuackAnimationRef) {
+        setVisible(true);
+        setQuackIndex((quackIndex+1)%2); 
+        setTimeout(() => {setVisible(false)},400);
+        QuackAnimationRef.current?.tada(300);
+      }
     }
   // chicken rubberband & text animation with Animatable finishes //
     
 
   // background parallel animation stuff starts //
-  const [play, setPlay] = useState(false);
-  const {progress, clock, isPlaying} = useMemo(
+  const {progress, clock} = useMemo(
     () => ({
       progress: new Value(0),
-      isPlaying: new Value(0),
       clock: new Clock(),
     }),
     [],
   );
 
-  useEffect(() => {
-    isPlaying.setValue(play ? 1 : 0);
-  }, [play, isPlaying]);
-
   useCode(
     () =>
       block([
-        cond(and(not(clockRunning(clock)), eq(isPlaying, 1)), startClock(clock)),
-        cond(and(clockRunning(clock), eq(isPlaying, 0)), stopClock(clock)),
+        cond(and(not(clockRunning(clock)), eq(1, 1)), startClock(clock)),
+        cond(and(clockRunning(clock), eq(1, 0)), stopClock(clock)),
         set(progress, runTiming(clock)),
       ]),
     [progress, clock],
@@ -295,7 +328,8 @@ const handlePlaySound = async note => {
  // background color interpolation finishes //
 
 
-      return (
+
+      return loaded ? (
           <View>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
             <Animated.View style={[{ transform: [{ translateX }, { translateY }]}]}>
@@ -311,17 +345,25 @@ const handlePlaySound = async note => {
                 {renderTextImage()}
               </TouchableWithoutFeedback>
 
+              <TouchableWithoutFeedback>
+                {renderQuack()}
+              </TouchableWithoutFeedback>
+
               <Animatable.View animation={'bounce'} iterationCount={'infinite'} iterationDelay={1000}>
                   <TouchableWithoutFeedback
                     onPress={_onPress}
-                    onPressIn={ () => pressin()  }
+                    // onPressIn={ () => pressin()  }
                     onPressOut={ () => pressout() } >
                     {renderImage()}
                   </TouchableWithoutFeedback>
               </Animatable.View>
             </View>
           </View>
-      );
+      ) :
+
+      (
+        <AppLoading/>
+      )
       };
       export default Chicken;
 
@@ -352,4 +394,20 @@ const styles = StyleSheet.create({
     height: 33,
     marginBottom: 20,
   },
+  quack: {
+    position: 'absolute',
+    width: 110,
+    height: 18,
+  },
+  quackLocation1: {
+    top: 250,
+    right: 15,
+  },
+  quackLocation2: {
+    left: 14,
+  },
+  // quackLocation3: {
+  //   right: 20,
+  //   bottom: 100,
+  // },
 });
