@@ -24,13 +24,27 @@
     "ios": {
       "bundleIdentifier": "com.summerroh.chickentoy",
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
+      }
     },
     "android": {
       "package": "com.summerroh.chickentoy",
       "permissions": [],
-      "versionCode": 7
+      "versionCode": 7,
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
+      }
     },
+    "plugins": [
+      [
+        "expo-ads-admob",
+        {
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ]
+    ],
     "description": ""
   }
 }

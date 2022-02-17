@@ -5,6 +5,7 @@ import Animated, { EasingNode, stopClock, interpolateColor, useAnimatedStyle, us
 import * as Animatable from 'react-native-animatable';
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
+import { AdMobBanner } from 'expo-ads-admob';
 // react-native--animatable explanation
 // https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
 
@@ -110,7 +111,7 @@ function Chicken() {
         ]);
         setLoaded(true);
       }catch(e){
-        console.log(e);
+        // console.log(e);
       }
     };
   
@@ -152,12 +153,7 @@ function Chicken() {
         playThroughEarpieceAndroid: false
       });
       startAnimation();
-      
     },[])
-
-    // useEffect(()=>{
-    //   console.log(count);
-    // },[count])
 
 
 //playing different sound files
@@ -188,65 +184,14 @@ const handlePlaySound = async note => {
     }
 //playing different sounds finish
 
-//playing different sound according to the length of press starts
-    // const playSound = () => {
-    //   if (count <= 1){
-    //     console.log("count is smaller than 1");
-    //     handlePlaySound('one')
-    //   }
-
-    //   else if (count <= 2){
-    //     console.log("count is smaller than 2");
-    //     handlePlaySound('two')
-    //   }
-
-    //   else if (count <= 3){
-    //     console.log("count is smaller than 3");
-    //     handlePlaySound('three')
-    //   }
-
-    //   else if (count <= 4){
-    //     console.log("count is smaller than 5");
-    //     handlePlaySound('four')
-    //   }
-
-    //   else if (count <= 5){
-    //     console.log("count is smaller than 5");
-    //     handlePlaySound('five')
-    //   }
-
-    //   else if (count > 5){
-    //     console.log("count is bigger than 5");
-    //     handlePlaySound('seven')
-    //   }
-    // };
-
-    // const counting=() => {
-    //    interval = setInterval(() => {
-    //     setCount(count => count + 1)
-    //     // console.log(count);
-    //   }, 400);
-    // }
-//playing different sound according to the length of press finishes
 
     const playSound = () => {
       const note = ChickenSoundKeys[Math.floor(Math.random() * ChickenSoundKeys.length)]
       handlePlaySound(note)
     }
 
-    // const pressin=() => {
-    //   // setPressing( !pressing )
-
-    //   // counting()
-    // }
-
     const pressout=() => {
-      // setPressing( !pressing )
-
       playSound();
-
-      // clearInterval(interval);
-      // setCount(count === 1)
     }
 
   // chicken rubberband & text animation with Animatable starts //
@@ -327,8 +272,6 @@ const handlePlaySound = async note => {
   })
  // background color interpolation finishes //
 
-
-
       return loaded ? (
           <View>
             <StatusBar barStyle="light-content" backgroundColor="#00000000" translucent={true}/>
@@ -357,6 +300,20 @@ const handlePlaySound = async note => {
                     {renderImage()}
                   </TouchableWithoutFeedback>
               </Animatable.View>
+
+            {/* // Display a banner ad */}
+            <AdMobBanner
+              style={{position: 'absolute',
+                      bottom: 0,
+                      left: '50%',
+                     
+                      transform: translateX('-50%'),
+                      width: screenWidth}}
+              bannerSize="banner"
+              adUnitID="ca-app-pub-7215370286680655/7594439473"
+              servePersonalizedAds={false} // true or false
+              onDidFailToReceiveAdWithError={this.bannerError} />
+
             </View>
           </View>
       ) :
@@ -406,8 +363,4 @@ const styles = StyleSheet.create({
   quackLocation2: {
     left: 14,
   },
-  // quackLocation3: {
-  //   right: 20,
-  //   bottom: 100,
-  // },
 });
