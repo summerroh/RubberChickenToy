@@ -305,10 +305,8 @@ const handlePlaySound = async note => {
             <AdMobBanner
               style={{position: 'absolute',
                       bottom: 0,
-                      left: '50%',
-                     
-                      transform: translateX('-50%'),
-                      width: screenWidth}}
+                      alignSelf: 'center',
+                    }}
               bannerSize="banner"
               adUnitID="ca-app-pub-7215370286680655/7594439473"
               servePersonalizedAds={false} // true or false

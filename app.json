@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "2.1.0",
+    "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -32,7 +32,7 @@
     "android": {
       "package": "com.summerroh.chickentoy",
       "permissions": [],
-      "versionCode": 7,
+      "versionCode": 8,
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
       }
