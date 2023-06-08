@@ -2,11 +2,7 @@
   "expo": {
     "name": "ChickenToy",
     "slug": "ChickenToy",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "version": "2.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,15 +14,21 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.summerroh.chickentoy",
       "buildNumber": "1.0.0",
       "supportsTablet": true,
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
+      },
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you.",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          }
+        ]
       }
     },
     "android": {
@@ -37,14 +39,17 @@
         "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
       }
     },
-    "plugins": [
-      [
-        "expo-ads-admob",
-        {
-          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
-        }
-      ]
-    ],
-    "description": ""
+    "plugins": [],
+    "description": "",
+    "extra": {
+      "eas": {
+        "projectId": "bc2ec425-d303-4f33-8e25-080f3621a382"
+      }
+    }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7215370286680655~2940367847",
+    "ios_app_id": "ca-app-pub-7215370286680655~2940367847",
+    "delay_app_measurement_init": true
   }
 }
