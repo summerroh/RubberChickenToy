@@ -19,9 +19,23 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Animatable from "react-native-animatable";
 import { Asset } from "expo-asset";
+// import mobileAds from "react-native-google-mobile-ads";
+import {
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+} from "react-native-google-mobile-ads";
 // import { AdMobBanner } from 'expo-ads-admob';
 // react-native--animatable explanation
 // https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
+
+// Initialize the Google Mobile Ads SDK starts
+// mobileAds()
+//   .initialize()
+//   .then((adapterStatuses) => {
+//     // Initialization complete!
+//   });
+// Initialize the Google Mobile Ads SDK finish
 
 const chickenSounds = {
   one: require("./assets/1.mp3"),
@@ -342,6 +356,13 @@ function Chicken() {
               adUnitID="ca-app-pub-7215370286680655/7594439473"
               servePersonalizedAds={false} // true or false
               onDidFailToReceiveAdWithError={this.bannerError} /> */}
+        {/* <BannerAd
+          unitId={TestIds.BANNER}
+          size={BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        /> */}
       </View>
     </View>
   );
