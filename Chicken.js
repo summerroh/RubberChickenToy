@@ -356,13 +356,13 @@ function Chicken() {
               adUnitID="ca-app-pub-7215370286680655/7594439473"
               servePersonalizedAds={false} // true or false
               onDidFailToReceiveAdWithError={this.bannerError} /> */}
-        {/* <BannerAd
+        <BannerAd
           unitId={TestIds.BANNER}
           size={BannerAdSize.BANNER}
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
-        /> */}
+        />
       </View>
     </View>
   );
