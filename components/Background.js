@@ -104,7 +104,8 @@ export default function Background() {
 
   const translateY = interpolateNode(progress, {
     inputRange: [0, 1],
-    outputRange: [0, -imageSize.width],
+    // outputRange: [0, -imageSize.width],
+    outputRange: [0, 0],
   });
   // background parallel animation stuff finishes //
 
@@ -135,9 +136,12 @@ export default function Background() {
 
   return (
     <View>
-      <Animated.View style={[{ transform: [{ translateX }, { translateY }] }]}>
+      <Animated.View style={[animationStyle]}>
         <Animated.Image
-          style={[styles.image, animationStyle]}
+          style={[
+            styles.image,
+            { transform: [{ translateX }, { translateY }] },
+          ]}
           source={chickImage}
           resizeMode="repeat"
         />
@@ -147,41 +151,8 @@ export default function Background() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: "20%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  chickenimage: {
-    width: 350,
-    height: 480,
-  },
-
   image: {
     width: animatedWidth,
     height: animatedHeight,
-    backgroundColor: "#f9e52b",
-  },
-  clickme: {
-    width: 220,
-    height: 33,
-    marginBottom: 20,
-  },
-  quack: {
-    position: "absolute",
-    width: 110,
-    height: 18,
-  },
-  quackLocation1: {
-    top: 250,
-    right: 15,
-  },
-  quackLocation2: {
-    left: 14,
   },
 });

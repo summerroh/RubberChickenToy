@@ -1,9 +1,11 @@
-import React, { useMemo, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
   View,
   StatusBar,
   TouchableWithoutFeedback,
+  Button,
+  Image,
 } from "react-native";
 import { Audio } from "expo-av";
 
@@ -16,29 +18,47 @@ import {
 } from "react-native-google-mobile-ads";
 
 import Background from "./components/Background";
+import { TouchableOpacity } from "react-native";
 
-const chickenimage = require("./assets/chicken.png");
+const chickenImage = require("./assets/chicken.png");
+const frogImage = require("./assets/frog.png");
+const duckImage = require("./assets/duck.png");
+const pigImage = require("./assets/pig.png");
+
 const textImage = require("./assets/clickme.png");
 const quackImgSource = require("./assets/quack.png");
 
 const chickenSounds = {
-  one: require("./assets/1.mp3"),
-  two: require("./assets/2.mp3"),
-  three: require("./assets/3.mp3"),
-  four: require("./assets/4.mp3"),
-  five: require("./assets/5.mp3"),
-  six: require("./assets/6.mp3"),
-  seven: require("./assets/7.mp3"),
-  eight: require("./assets/8.mp3"),
-  nine: require("./assets/9.mp3"),
-  ten: require("./assets/10.mp3"),
-  eleven: require("./assets/11.mp3"),
-  twelve: require("./assets/12.mp3"),
-  thirteen: require("./assets/13.mp3"),
-  fourteen: require("./assets/14.mp3"),
+  one: require("./assets/sound/chicken/1.mp3"),
+  two: require("./assets/sound/chicken/2.mp3"),
+  three: require("./assets/sound/chicken/3.mp3"),
+  four: require("./assets/sound/chicken/4.mp3"),
+  five: require("./assets/sound/chicken/5.mp3"),
+  six: require("./assets/sound/chicken/6.mp3"),
+  seven: require("./assets/sound/chicken/7.mp3"),
+  eight: require("./assets/sound/chicken/8.mp3"),
+  nine: require("./assets/sound/chicken/9.mp3"),
+  ten: require("./assets/sound/chicken/10.mp3"),
+  eleven: require("./assets/sound/chicken/11.mp3"),
+  twelve: require("./assets/sound/chicken/12.mp3"),
+  thirteen: require("./assets/sound/chicken/13.mp3"),
+  fourteen: require("./assets/sound/chicken/14.mp3"),
 };
 
-const ChickenSoundKeys = Object.keys(chickenSounds);
+const duckSounds = {
+  one: require("./assets/sound/duck/1.mp3"),
+  two: require("./assets/sound/duck/2.mp3"),
+  three: require("./assets/sound/duck/3.mp3"),
+  four: require("./assets/sound/duck/4.mp3"),
+  five: require("./assets/sound/duck/5.mp3"),
+  six: require("./assets/sound/duck/6.mp3"),
+  seven: require("./assets/sound/duck/7.mp3"),
+  eight: require("./assets/sound/duck/8.mp3"),
+};
+
+const pigSounds = {
+  one: require("./assets/sound/pig/1.wav"),
+};
 
 function Chicken() {
   const [loaded, setLoaded] = useState(false);
@@ -48,6 +68,9 @@ function Chicken() {
     styles.quackLocation2,
   ]);
   const [quackIndex, setQuackIndex] = useState(0);
+  const [toyImage, setToyImage] = useState(chickenImage);
+  const [toySounds, setToySounds] = useState(chickenSounds);
+  const [toySoundKeys, setToySoundKeys] = useState(Object.keys(toySounds));
 
   // preloading the assets, if the assets are not loaded, show splash screen starts //
   const preLoad = async () => {
@@ -71,8 +94,8 @@ function Chicken() {
     return (
       <Animatable.Image
         ref={AnimationRef}
-        source={chickenimage}
-        style={styles.chickenimage}
+        source={toyImage}
+        style={styles.toyImage}
       />
     );
   };
@@ -122,7 +145,7 @@ function Chicken() {
     const soundObject = new Audio.Sound();
 
     try {
-      let source = chickenSounds[note];
+      let source = toySounds[note];
       await soundObject.loadAsync(source);
       await soundObject
         .playAsync()
@@ -141,8 +164,7 @@ function Chicken() {
   //playing different sounds finish
 
   const playSound = () => {
-    const note =
-      ChickenSoundKeys[Math.floor(Math.random() * ChickenSoundKeys.length)];
+    const note = toySoundKeys[Math.floor(Math.random() * toySoundKeys.length)];
     handlePlaySound(note);
   };
 
@@ -173,6 +195,23 @@ function Chicken() {
   };
   // chicken rubberband & text animation with Animatable finishes //
 
+  const onPressChicken = () => {
+    setToyImage(chickenImage);
+    setToySounds(chickenSounds);
+    setToySoundKeys(Object.keys(chickenSounds));
+  };
+  const onPressDuck = () => {
+    setToyImage(duckImage);
+    setToySounds(duckSounds);
+    setToySoundKeys(Object.keys(duckSounds));
+  };
+  const onPressPig = () => {
+    setToyImage(pigImage);
+    setToySounds(pigSounds);
+    setToySoundKeys(Object.keys(pigSounds));
+    // console.log(toySoundKeys);
+  };
+
   return loaded ? (
     <View>
       <StatusBar
@@ -183,6 +222,29 @@ function Chicken() {
       <Background />
 
       <View style={styles.container}>
+        <View style={styles.btnContainer}>
+          <TouchableOpacity onPress={() => onPressChicken()}>
+            <Image
+              source={require("./assets/btn-chicken.png")}
+              style={styles.btn}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onPressDuck()}>
+            <Image
+              source={require("./assets/btn-duck.png")}
+              style={styles.btn}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onPressPig()}>
+            <Image
+              source={require("./assets/btn-pig.png")}
+              style={styles.btn}
+            />
+          </TouchableOpacity>
+        </View>
+
         <TouchableWithoutFeedback onPress={_onPress}>
           {renderTextImage()}
         </TouchableWithoutFeedback>
@@ -235,17 +297,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
-  chickenimage: {
-    width: 350,
+  toyImage: {
+    width: 360,
     height: 480,
   },
-
-  // image: {
-  //   width: animatedWidth,
-  //   height: animatedHeight,
-  //   backgroundColor: "#f9e52b",
-  // },
   clickme: {
     width: 220,
     height: 33,
@@ -262,5 +317,15 @@ const styles = StyleSheet.create({
   },
   quackLocation2: {
     left: 14,
+  },
+  btnContainer: {
+    position: "absolute",
+    top: 44,
+    flexDirection: "row",
+  },
+  btn: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
   },
 });
