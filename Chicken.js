@@ -4,38 +4,22 @@ import {
   View,
   StatusBar,
   TouchableWithoutFeedback,
-  Dimensions,
 } from "react-native";
 import { Audio } from "expo-av";
-import Animated, {
-  EasingNode,
-  stopClock,
-  interpolateColor,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withTiming,
-  withRepeat,
-} from "react-native-reanimated";
+
 import * as Animatable from "react-native-animatable";
 import { Asset } from "expo-asset";
-// import mobileAds from "react-native-google-mobile-ads";
 import {
   BannerAd,
   TestIds,
   BannerAdSize,
 } from "react-native-google-mobile-ads";
-// import { AdMobBanner } from 'expo-ads-admob';
-// react-native--animatable explanation
-// https://dev-yakuza.posstree.com/en/react-native/react-native-animatable/
 
-// Initialize the Google Mobile Ads SDK starts
-// mobileAds()
-//   .initialize()
-//   .then((adapterStatuses) => {
-//     // Initialization complete!
-//   });
-// Initialize the Google Mobile Ads SDK finish
+import Background from "./components/Background";
+
+const chickenimage = require("./assets/chicken.png");
+const textImage = require("./assets/clickme.png");
+const quackImgSource = require("./assets/quack.png");
 
 const chickenSounds = {
   one: require("./assets/1.mp3"),
@@ -56,66 +40,6 @@ const chickenSounds = {
 
 const ChickenSoundKeys = Object.keys(chickenSounds);
 
-//background animation stuff starts//
-const imageSize = {
-  width: 192,
-  height: 192,
-};
-
-const screenWidth = Dimensions.get("screen").width;
-const screenHeight = Dimensions.get("screen").height;
-const animatedWidth = screenWidth + imageSize.width;
-const animatedHeight = screenHeight + imageSize.height;
-
-const {
-  useCode,
-  block,
-  set,
-  Value,
-  Clock,
-  eq,
-  clockRunning,
-  not,
-  cond,
-  startClock,
-  timing,
-  interpolateNode,
-  and,
-} = Animated;
-
-const runTiming = (clock) => {
-  const state = {
-    finished: new Value(0),
-    position: new Value(0),
-    time: new Value(0),
-    frameTime: new Value(0),
-  };
-
-  const config = {
-    duration: 5000,
-    toValue: 1,
-    easing: EasingNode.inOut(EasingNode.linear),
-  };
-
-  return block([
-    // we run the step here that is going to update position
-    cond(
-      not(clockRunning(clock)),
-      set(state.time, 0),
-      timing(clock, state, config)
-    ),
-    cond(eq(state.finished, 1), [
-      set(state.finished, 0),
-      set(state.position, 0),
-      set(state.frameTime, 0),
-      set(state.time, 0),
-    ]),
-    state.position,
-  ]);
-};
-
-//background animation stuff finishes//
-
 function Chicken() {
   const [loaded, setLoaded] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -124,14 +48,10 @@ function Chicken() {
     styles.quackLocation2,
   ]);
   const [quackIndex, setQuackIndex] = useState(0);
-  // const [count,setCount] = useState(1);
 
   // preloading the assets, if the assets are not loaded, show splash screen starts //
   const preLoad = async () => {
     try {
-      // await Font.loadAsync({
-      //   ...Ionicons.font
-      // });
       await Asset.loadAsync([
         require("./assets/chicken.png"),
         require("./assets/chick.png"),
@@ -139,9 +59,7 @@ function Chicken() {
         require("./assets/quack.png"),
       ]);
       setLoaded(true);
-    } catch (e) {
-      // console.log(e);
-    }
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -150,28 +68,24 @@ function Chicken() {
   // preloading the assets, if the assets are not loaded, show splash screen starts //
 
   const renderImage = () => {
-    var imgSource = require("./assets/chicken.png");
     return (
       <Animatable.Image
         ref={AnimationRef}
-        source={imgSource}
+        source={chickenimage}
         style={styles.chickenimage}
       />
     );
   };
   const renderTextImage = () => {
-    var textImgSource = require("./assets/clickme.png");
     return (
       <Animatable.Image
         ref={TextAnimationRef}
-        source={textImgSource}
+        source={textImage}
         style={styles.clickme}
       />
     );
   };
   const renderQuack = () => {
-    var quackImgSource = require("./assets/quack.png");
-
     return visible ? (
       <Animatable.Image
         ref={QuackAnimationRef}
@@ -179,7 +93,11 @@ function Chicken() {
         style={[styles.quack, quackLocation[quackIndex]]}
       />
     ) : (
-      <Animatable.Image ref={QuackAnimationRef} style={styles.quack} />
+      <Animatable.Image
+        ref={QuackAnimationRef}
+        source={quackImgSource}
+        style={[styles.quack, { display: "none" }]}
+      />
     );
   };
 
@@ -191,7 +109,7 @@ function Chicken() {
       staysActiveInBackground: false,
       playThroughEarpieceAndroid: false,
     });
-    startAnimation();
+    // startAnimation();
   }, []);
 
   //playing different sound files
@@ -255,75 +173,14 @@ function Chicken() {
   };
   // chicken rubberband & text animation with Animatable finishes //
 
-  // background parallel animation stuff starts //
-  const { progress, clock } = useMemo(
-    () => ({
-      progress: new Value(0),
-      clock: new Clock(),
-    }),
-    []
-  );
-
-  useCode(
-    () =>
-      block([
-        cond(and(not(clockRunning(clock)), eq(1, 1)), startClock(clock)),
-        cond(and(clockRunning(clock), eq(1, 0)), stopClock(clock)),
-        set(progress, runTiming(clock)),
-      ]),
-    [progress, clock]
-  );
-
-  const translateX = interpolateNode(progress, {
-    inputRange: [0, 1],
-    outputRange: [0, -imageSize.width],
-  });
-
-  const translateY = interpolateNode(progress, {
-    inputRange: [0, 1],
-    outputRange: [0, -imageSize.width],
-  });
-  // background parallel animation stuff finishes //
-
-  // background color interpolation starts //
-  // https://www.youtube.com/watch?v=bLfT6KJyFzI
-  // https://github.com/osama256/Animation-color-interpolate/blob/master/App.js
-
-  const animation = useSharedValue(0);
-
-  const animationColor = useDerivedValue(() => {
-    return interpolateColor(animation.value, [0, 1], ["#f9e52b", "#FFD741"]);
-  });
-  const startAnimation = () => {
-    animation.value = withRepeat(
-      withTiming(1, {
-        duration: 2000,
-      }),
-      -1,
-      true
-    );
-  };
-  const animationStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: animationColor.value,
-    };
-  });
-  // background color interpolation finishes //
-
-  return (
+  return loaded ? (
     <View>
       <StatusBar
         barStyle="light-content"
         backgroundColor="#00000000"
         translucent={true}
       />
-      <Animated.View style={[{ transform: [{ translateX }, { translateY }] }]}>
-        <Animated.Image
-          style={[styles.image, animationStyle]}
-          source={require("./assets/chick.png")}
-          resizeMode="repeat"
-        />
-      </Animated.View>
+      <Background />
 
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={_onPress}>
@@ -345,27 +202,26 @@ function Chicken() {
             {renderImage()}
           </TouchableWithoutFeedback>
         </Animatable.View>
-
         {/* // Display a banner ad */}
-        {/* <AdMobBanner
-              style={{position: 'absolute',
-                      bottom: 0,
-                      alignSelf: 'center',
-                    }}
-              bannerSize="banner"
-              adUnitID="ca-app-pub-7215370286680655/7594439473"
-              servePersonalizedAds={false} // true or false
-              onDidFailToReceiveAdWithError={this.bannerError} /> */}
-        <BannerAd
-          unitId={TestIds.BANNER}
-          size={BannerAdSize.BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
+        {/* adUnitID="ca-app-pub-7215370286680655/7594439473" */}
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            alignSelf: "center",
           }}
-        />
+        >
+          <BannerAd
+            unitId={TestIds.BANNER}
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </View>
     </View>
-  );
+  ) : null;
 }
 export default Chicken;
 
@@ -385,11 +241,11 @@ const styles = StyleSheet.create({
     height: 480,
   },
 
-  image: {
-    width: animatedWidth,
-    height: animatedHeight,
-    backgroundColor: "#f9e52b",
-  },
+  // image: {
+  //   width: animatedWidth,
+  //   height: animatedHeight,
+  //   backgroundColor: "#f9e52b",
+  // },
   clickme: {
     width: 220,
     height: 33,
