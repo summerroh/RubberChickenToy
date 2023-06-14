@@ -4,7 +4,6 @@ import {
   View,
   StatusBar,
   TouchableWithoutFeedback,
-  Button,
   Image,
 } from "react-native";
 import { Audio } from "expo-av";
@@ -274,7 +273,8 @@ function Chicken() {
           }}
         >
           <BannerAd
-            unitId={TestIds.BANNER}
+            // unitId={TestIds.BANNER}
+            unitId={"ca-app-pub-7215370286680655/7594439473"}
             size={BannerAdSize.BANNER}
             requestOptions={{
               requestNonPersonalizedAdsOnly: true,

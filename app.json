@@ -3,7 +3,7 @@
     "name": "ChickenToy",
     "slug": "ChickenToy",
     "platforms": ["ios", "android", "web"],
-    "version": "2.2.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -34,7 +34,7 @@
     "android": {
       "package": "com.summerroh.chickentoy",
       "permissions": [],
-      "versionCode": 8,
+      "versionCode": 9,
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-7215370286680655~2940367847"
       }
